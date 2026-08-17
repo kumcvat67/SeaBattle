@@ -1,3 +1,4 @@
-.bin
-.obj
-.properties
+bin/
+obj/
+.vs/
+wwwroot/
