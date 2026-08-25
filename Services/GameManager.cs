@@ -10,6 +10,7 @@ public interface IGameManager
     Game? GetGame (string GameCode);
     bool RemoveGame(string GameCode);
     JoinResult AddPlayer(string GameCode, string Id);
+    Game? GetGamePlay (string GameCode, string id);
 }
 
 public class GameManager : IGameManager
@@ -20,7 +21,11 @@ public class GameManager : IGameManager
     {
         var game = new Game(hostUserID);
 
-        _games.TryAdd(game.GameCode, game);
+        Console.WriteLine("     Create class object Game");
+
+        var res = _games.TryAdd(game.GameCode, game);
+        if (res) Console.WriteLine("    Add game to dictionary");
+        
         return game;
     }
 
@@ -42,5 +47,19 @@ public class GameManager : IGameManager
         if (game==null) return JoinResult.GameNotFound;
 
         return game.AddSecondUser(Id);
+    }
+
+    public Game? GetGamePlay (string GameCode, string id)
+    {
+        var game = GetGame(GameCode);
+        if (game == null)
+        {
+            return null;
+        }
+        if(game.FirstUser==id || game.SecondUser == id)
+        {
+            return game;
+        }
+        return null;
     }
 }
