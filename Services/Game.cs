@@ -11,7 +11,7 @@ public class Game
     public string GameCode {get;}=CodeGenerator.GenerateCode();
     public Player FirstUser {get; private set; }
     public Player? SecondUser {get; private set; }
-    public GameStage GameStage {get; set; }
+    public GameStage gameStage {get; set; }
     public Game(string UserID)
     {
         FirstUser = new Player(UserID);
@@ -22,6 +22,7 @@ public class Game
         if(SecondUser!=null) return ResultEnum.GameIsFull;
 
         SecondUser = new Player(UserID);
+        gameStage=GameStage.placement;
         return ResultEnum.Success;
     }
     public ResultEnum ShipAudit(string id, List<Ship> ships)

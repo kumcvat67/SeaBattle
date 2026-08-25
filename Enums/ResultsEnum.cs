@@ -1,9 +1,11 @@
 namespace SeaBattle.Enums;
 
-public enum Status
+public enum ResultEnum
 {
     Success,
     GameNotFound,
     AlreadyInGame, 
-    GameIsFull
+    GameIsFull,
+    NotFoundPlayer,
+    Fail
 }

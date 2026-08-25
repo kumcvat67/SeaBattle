@@ -9,7 +9,7 @@ public interface IGameManager
     Game createGame(string hostUserId);
     Game? GetGame (string GameCode);
     bool RemoveGame(string GameCode);
-    JoinResult AddPlayer(string GameCode, string Id);
+    ResultEnum AddPlayer(string GameCode, string Id);
     Game? GetGamePlay (string GameCode, string id);
 }
 
@@ -40,11 +40,11 @@ public class GameManager : IGameManager
         return _games.TryRemove(GameCode, out _);
     }
 
-    public JoinResult AddPlayer(string GameCode, string Id)
+    public ResultEnum AddPlayer(string GameCode, string Id)
     {
         var game = GetGame(GameCode);
 
-        if (game==null) return JoinResult.GameNotFound;
+        if (game==null) return ResultEnum.GameNotFound;
 
         return game.AddSecondUser(Id);
     }
@@ -52,11 +52,11 @@ public class GameManager : IGameManager
     public Game? GetGamePlay (string GameCode, string id)
     {
         var game = GetGame(GameCode);
-        if (game == null)
+        if (game == null || game.gameStage==GameStage.WaitingSecondPlayer)
         {
             return null;
         }
-        if(game.FirstUser==id || game.SecondUser == id)
+        if(game.FirstUser.id==id || game.SecondUser?.id == id)
         {
             return game;
         }
