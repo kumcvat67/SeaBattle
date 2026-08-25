@@ -2,15 +2,18 @@ namespace SeaBattle.Models;
 
 public class Ship
 {
-    public int size;
-    public int x;
-    public int y;
-    public bool isVertical;
-    public Ship(int ssize, int sx, int sy, bool sverticale)
+    public int Size { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
+    public bool IsVertical { get; set; }
+
+    public Ship() { }
+
+    public Ship(int size, int x, int y, bool isVertical)
     {
-        size = ssize;
-        x = sx;
-        y=sy;
-        isVertical=sverticale;
+        Size = size;
+        X = x;
+        Y = y;
+        IsVertical = isVertical;
     }
 }
