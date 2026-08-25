@@ -3,29 +3,47 @@ using SeaBattle.Enums;
 public class Map
 {
     CellStatus[,] _grid = new CellStatus[10,10];
-
-    public bool CanPlaceShip(Ship ship)
+    public string? playerId = null;
+    public Map(string id)
     {
-        if (ship.isVertical && ship.y + ship.size > 10) return false;
-        if (!ship.isVertical && ship.x + ship.size > 10) return false;
+        playerId=id;
+    }
 
-        int startX = Math.Max(0, ship.x - 1);
-        int endX = Math.Min(9, ship.isVertical ? ship.x + 1 : ship.x + ship.size);
+    public ResultEnum PlaceShip(Ship ship)
+{
+    if (ship.IsVertical && ship.Y + ship.Size > 10) return ResultEnum.Fail;
+    if (!ship.IsVertical && ship.X + ship.Size > 10) return ResultEnum.Fail;
 
-        int startY = Math.Max(0, ship.y - 1);
-        int endY = Math.Min(9, ship.isVertical ? ship.y + ship.size : ship.y + 1);
+    int startX = Math.Max(0, ship.X - 1);
+    int endX = Math.Min(9, ship.IsVertical ? ship.X + 1 : ship.X + ship.Size);
 
-        for (int x = startX; x <= endX; x++)
+    int startY = Math.Max(0, ship.Y - 1);
+    int endY = Math.Min(9, ship.IsVertical ? ship.Y + ship.Size : ship.Y + 1);
+
+    for (int x = startX; x <= endX; x++)
+    {
+        for (int y = startY; y <= endY; y++)
         {
-            for (int y = startY; y <= endY; y++)
+            if (_grid[x, y] != CellStatus.Free)
             {
-                if (_grid[x, y] != CellStatus.Free)
-                {
-                    return false;
-                }
+                return ResultEnum.Fail;
             }
         }
-
-        return true;
     }
+
+        if (ship.IsVertical)
+        {
+            for(int i=0; i < ship.Size; i++)
+            {
+                _grid[ship.X, ship.Y+i]=CellStatus.Occupied;
+            }
+        } else if (!ship.IsVertical)
+        {
+            for(int i=0; i < ship.Size; i++)
+            {
+                _grid[ship.X+i, ship.Y]=CellStatus.Occupied;
+            }
+        }
+    return ResultEnum.Success;
+}
 }
