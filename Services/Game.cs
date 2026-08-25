@@ -9,22 +9,55 @@ using System.Text;
 public class Game
 {
     public string GameCode {get;}=CodeGenerator.GenerateCode();
-    public string FirstUser {get; private set; }
-    public string SecondUser {get; private set; } = null!;
+    public Player FirstUser {get; private set; }
+    public Player? SecondUser {get; private set; }
+    public GameStage GameStage {get; set; }
     public Game(string UserID)
     {
-        FirstUser = UserID;
+        FirstUser = new Player(UserID);
     }
-    public JoinResult AddSecondUser(string UserID)
+    public ResultEnum AddSecondUser(string UserID)
     {
-        if (FirstUser==UserID) return JoinResult.AlreadyInGame;
-        if(SecondUser!=null) return JoinResult.GameIsFull;
+        if (FirstUser.id==UserID) return ResultEnum.AlreadyInGame;
+        if(SecondUser!=null) return ResultEnum.GameIsFull;
 
-        SecondUser=UserID;
-        return JoinResult.Success;
+        SecondUser = new Player(UserID);
+        return ResultEnum.Success;
+    }
+    public ResultEnum ShipAudit(string id, List<Ship> ships)
+    {
+        var player = GetPlayer(id);
+        if (player == null)
+        {
+            return ResultEnum.NotFoundPlayer;
+        }
+        foreach (var ship in ships)
+        {
+            var res = player.map.PlaceShip(ship);
+            if (res == ResultEnum.Fail)
+            {
+                return ResultEnum.Fail;
+            }
+        }
+        return ResultEnum.Success;
+    }
+    private Player? GetPlayer(string id)
+    {
+        if (FirstUser.id == id) return FirstUser;
+        if (SecondUser?.id == id) return SecondUser;
+        return null;
     }
 }
 
+public class Player
+{
+    public string id {get; set;}=null!;
+    public Map map {get; private set;}=null!;
+    public Player(string ID)
+    {
+        id= ID;
+    }
+}
 public class CodeGenerator
 {
     private const string Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -35,7 +68,6 @@ public class CodeGenerator
 
         for (int i = 0; i < length; i++)
         {
-            // Отримуємо випадковий індекс у межах довжини рядка Chars
             int index = RandomNumberGenerator.GetInt32(Chars.Length);
             result.Append(Chars[index]);
         }
